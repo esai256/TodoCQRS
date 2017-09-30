@@ -11,10 +11,12 @@ from "./item";
 export default class StoreCQRS
 {
     /**
-     * @param {!string} name Database name
+     * @constructor
      * @param {function()} [callback] Called when the Store is ready
+     * @param {Boolean} plugin Can dock into some Persistence-Layers via plugins
+     * @returns {void}
      */
-    constructor(name, callback)
+    constructor(callback, plugin = false)
     {
         /**
          * @type {ItemList}
@@ -26,9 +28,9 @@ export default class StoreCQRS
          *
          * @returns {ItemList} Current array of todos
          */
-        this.getLocalStorage = () =>
+        this.getItems = () =>
         {
-            return liveTodos || JSON.parse(localStorage.getItem(name) || "[]");
+            return liveTodos || JSON.parse(plugin.get() || "[]");
         };
 
         /**
@@ -37,9 +39,9 @@ export default class StoreCQRS
          * @param {ItemList} todos Array of todos to write
          * @returns {void}
          */
-        this.setLocalStorage = (todos) =>
+        this.setItems = (todos) =>
         {
-            localStorage.setItem(name, JSON.stringify(liveTodos = todos));
+            plugin.set(JSON.stringify(liveTodos = todos));
         };
 
         if (callback)
@@ -62,7 +64,7 @@ export default class StoreCQRS
      */
     find(query, callback)
     {
-        const todos = this.getLocalStorage();
+        const todos = this.getItems();
 
         callback(todos.filter(todo =>
         {
@@ -89,7 +91,7 @@ export default class StoreCQRS
     update(update, callback)
     {
         const id = update.id;
-        const todos = this.getLocalStorage();
+        const todos = this.getItems();
         let i = todos.length;
 
         while (i--)
@@ -109,7 +111,7 @@ export default class StoreCQRS
             }
         }
 
-        this.setLocalStorage(todos);
+        this.setItems(todos);
 
         if (callback)
         {
@@ -126,10 +128,10 @@ export default class StoreCQRS
      */
     insert(item, callback)
     {
-        const todos = this.getLocalStorage();
+        const todos = this.getItems()();
 
         todos.push(item);
-        this.setLocalStorage(todos);
+        this.setItems(todos);
 
         if (callback)
         {
@@ -146,7 +148,7 @@ export default class StoreCQRS
      */
     remove(query, callback)
     {
-        const todos = this.getLocalStorage().filter(todo =>
+        const todos = this.getItems().filter(todo =>
         {
             let k = null;
 
@@ -161,7 +163,7 @@ export default class StoreCQRS
             return false;
         });
 
-        this.setLocalStorage(todos);
+        this.setItems(todos);
 
         if (callback)
         {
