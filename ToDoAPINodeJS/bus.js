@@ -3,12 +3,15 @@
  * @class
  * @type {Bus}
  */
-module.exports = class Bus {
+
+class Bus
+{
     /**
      * @constructor
      * @return {void}
      */
-    constructor() {
+    constructor()
+    {
         this.Subscribers = new Map();
     }
 
@@ -18,14 +21,16 @@ module.exports = class Bus {
      * @param  {Message} message The message which has been published
      * @return {void}
      */
-    publish(symbol, message) {
+    publish(symbol, message)
+    {
         //set new collection of subscribers to this message-type (symbol) if not yet existing
-        if(!this.Subscribers.get(symbol))
+        if (!this.Subscribers.get(symbol))
         {
             this.Subscribers.set(symbol, new Set());
         }
 
-        this.Subscribers.get(symbol).forEach(subscriber => {
+        this.Subscribers.get(symbol).forEach(subscriber =>
+        {
             subscriber.handle(message);
         });
     }
@@ -36,9 +41,10 @@ module.exports = class Bus {
      * @param  {Subscriber} subscriber The class which handles the message
      * @return {void}
      */
-    subscribe(symbol, subscriber) {
+    subscribe(symbol, subscriber)
+    {
         //set new collection of subscribers to this message-type (symbol) if not yet existing
-        if(!this.Subscribers.get(symbol))
+        if (!this.Subscribers.get(symbol))
         {
             this.Subscribers.set(symbol, new Set());
         }
@@ -46,3 +52,5 @@ module.exports = class Bus {
         this.Subscribers.get(symbol).add(new subscriber());
     }
 }
+
+module.exports = new Bus();

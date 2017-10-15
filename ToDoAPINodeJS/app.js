@@ -1,11 +1,16 @@
-const express = require("express");
 const Bus = require("./bus.js");
-const TestSubscriber = require("./testSubscriber.js");
+const AddTaskSubscriber = require("./addTaskSubscriber.js");
+const TaskAddedEvent = require("./taskAddedEvent");
+const TaskAddedSubscriber = require("./taskAddedSubscriber");
 
-const bus = new Bus();
+const addTaskID = Symbol("AddTask");
 
-const symbol = Symbol("asdf");
+Bus.subscribe(addTaskID, AddTaskSubscriber);
+console.log(0, TaskAddedEvent.Symbol);
+Bus.subscribe(TaskAddedEvent.Symbol, TaskAddedSubscriber);
 
-bus.subscribe(symbol, TestSubscriber);
-
-bus.publish(symbol, "Testmessage");
+Bus.publish(addTaskID, {
+    Title: "Title",
+    CreatedOn: new Date(),
+    Done: false
+});
