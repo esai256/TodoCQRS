@@ -19,7 +19,7 @@
     "ToDoAPI_FS": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "fapi/values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
