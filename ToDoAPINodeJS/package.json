@@ -1,0 +1,13 @@
+{
+  "name": "ToDoAPINodeJS",
+  "version": "0.0.1",
+  "description": "An API for the TodoMVC-Frontend with CQRS",
+  "main": "app.js",
+  "repository": "https://github.com/esai256/TodoCQRS",
+  "author": "Elias Seichter (esai), Matthias Unruhe",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
