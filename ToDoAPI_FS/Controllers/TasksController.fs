@@ -13,8 +13,8 @@ type TasksController() =
         ReadModel.getAll
 
     // GET fapi/tasks/5
-    [<HttpGet("{id:int}")>]
-    member this.Get(id : int) =
+    [<HttpGet("{id:guid}")>]
+    member this.Get(id : System.Guid) =
         ReadModel.get (fun task -> task.id = id)
 
     // GET fapi/tasks/active
@@ -57,7 +57,7 @@ type TasksController() =
     
     // DELETE fapi/tasks/5
     [<HttpDelete("{id}")>]
-    member this.Delete(id : int) =
+    member this.Delete(id : System.Guid) =
         DeleteTaskCommand id
         |> ServiceBus.Publish
         |> ignore

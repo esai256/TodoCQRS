@@ -7,12 +7,12 @@ module Repository =
         | None    -> None
 
 module EventStore = 
-    let mutable private storedEvents : Message list = []
+
+    let private storedEvents = new ResizeArray<Message>()
 
     let save (newEvents : Message seq option) =
         match newEvents with
-        | Some(e) -> let newEventList = e |> Seq.toList
-                     storedEvents <- storedEvents |> List.append newEventList
+        | Some(e) -> storedEvents.AddRange(e)
         | None    -> None |> ignore
         newEvents
 

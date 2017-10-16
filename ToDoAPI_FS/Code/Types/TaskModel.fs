@@ -1,7 +1,7 @@
 namespace ToDoAPI
 
 type TaskModel = {
-    id : int; 
+    id : System.Guid; 
     title : string;
     isDone : bool
 }

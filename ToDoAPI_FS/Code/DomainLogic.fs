@@ -2,9 +2,8 @@ namespace ToDoAPI
 
 module DomainLogic =
     let createTask task =
-        let taskCount = ReadModel.getAll |> List.length
         {
-            Events = [| TaskAddedEvent { id = taskCount + 1; title = task.title; isDone = task.isDone } |]
+            Events = [| TaskAddedEvent { id = System.Guid.NewGuid(); title = task.title; isDone = task.isDone } |]
         }
 
     let updateTask (id, title) =
@@ -27,5 +26,5 @@ module DomainLogic =
         let createDeletedEvent task = TaskDeletedEvent task.id
 
         {
-            Events = (ReadModel.get filterByStatus) |> (List.map createDeletedEvent)
+            Events = (ReadModel.get filterByStatus) |> (Seq.map createDeletedEvent)
         }
