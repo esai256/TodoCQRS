@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Code/Types/TaskModel.fs" />
+    <Compile Include="Code/Types/Message.fs" />
+    <Compile Include="Code/Types/Subscription.fs" />
+    <Compile Include="Code/ServiceBus.fs" />
+    <Compile Include="Code/ReadModel.fs" />
+    <Compile Include="Code/Types/Aggregate.fs" />
+    <Compile Include="Code/DomainLogic.fs" />
+    <Compile Include="Code/WriteModel.fs" />
+    <Compile Include="Code/Handlers/*.fs" />
     <Compile Include="Controllers/*.fs" />
     <Compile Include="Startup.fs" />
     <Compile Include="Program.fs" />
@@ -17,8 +26,8 @@
     <PackageReference Include="FSharp.NET.Sdk" Version="1.0.0-beta-*" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.2" />
     <PackageReference Include="Microsoft.FSharp.Core.netcore" Version="1.0.0-alpha-161023" />

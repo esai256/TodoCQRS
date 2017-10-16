@@ -1,39 +1,64 @@
 namespace ToDoAPI.Controllers
 
 open Microsoft.AspNetCore.Mvc
-open ToDoAPI.Messaging
+open ToDoAPI
 
 [<Route("fapi/[controller]")>]
 type TasksController() =
     inherit Controller()
 
-    let processQuery =
-        ReadModelFacade.Get
-
-    let processCommand =
-        Commands.Create >> ServiceBus.Publish >> ignore
-
     // GET fapi/tasks
     [<HttpGet>]
     member this.Get() =
-        None |> processQuery
+        ReadModel.getAll
 
     // GET fapi/tasks/5
-    [<HttpGet("{id}")>]
-    member this.Get(id:int) =
-        Some(id) |> processQuery
+    [<HttpGet("{id:int}")>]
+    member this.Get(id : int) =
+        ReadModel.get (fun task -> task.id = id)
+
+    // GET fapi/tasks/active
+    [<HttpGet("{status:alpha}")>]
+    member this.Get(status : string) =
+        let isDone = 
+            match status with
+            | "active" -> Some(false)
+            | "completed" -> Some(true)
+            | _ -> None
+        
+        ReadModel.get (fun task -> task.isDone = match isDone with | Some(x) -> x | None -> task.isDone)
 
     // POST fapi/tasks
     [<HttpPost>]
-    member this.Post([<FromBody>]task:Task) =
-        (None, Some(task), Command.AddTask) |> processCommand
+    member this.Post([<FromBody>]task : TaskModel) =
+        AddTaskCommand task
+        |> ServiceBus.Publish
+        |> ignore
+        this.Get()
     
-    // PUT fapi/tasks/5
-    [<HttpPut("{id}")>]
-    member this.Put(id:int, [<FromBody>]task:Task) =
-        (Some(id), Some(task), Commands.UpdateTask) |> processCommand
+    // PUT fapi/tasks
+    [<HttpPut>]
+    member this.Put([<FromBody>]task : TaskModel) =
+        let command = match task.isDone with
+                      | true -> CompleteTaskCommand task.id
+                      | false -> UpdateTaskCommand (task.id, task.title)
+        command
+        |> ServiceBus.Publish
+        |> ignore
+        this.Get()
+    
+    // DELETE fapi/tasks
+    [<HttpDelete>]
+    member this.Delete() =
+        DeleteCompletedTasksCommand true
+        |> ServiceBus.Publish
+        |> ignore
+        this.Get()
     
     // DELETE fapi/tasks/5
     [<HttpDelete("{id}")>]
-    member this.Delete(id:int) =
-        (Some(id), None, Commands.DeleteTask) |> processCommand
+    member this.Delete(id : int) =
+        DeleteTaskCommand id
+        |> ServiceBus.Publish
+        |> ignore
+        this.Get()
