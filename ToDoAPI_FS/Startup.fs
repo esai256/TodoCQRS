@@ -36,12 +36,12 @@ type Startup (env:IHostingEnvironment)=
         app.UseMvc() |> ignore
 
         // Register command handlers and event handlers at service bus
-        ServiceBus.Subscribe { name = "CmdAddTask"; handler = CommandHandlers.addTask }
-        ServiceBus.Subscribe { name = "CmdUpdateTask"; handler = CommandHandlers.updateTask }
-        ServiceBus.Subscribe { name = "CmdCompleteTask"; handler = CommandHandlers.completeTask }
-        ServiceBus.Subscribe { name = "CmdDeleteTask"; handler = CommandHandlers.deleteTask }
-        ServiceBus.Subscribe { name = "CmdDeleteCompletedTasks";  handler = CommandHandlers.deleteCompletedTasks }
-        ServiceBus.Subscribe { name = "EvtTaskAdded"; handler = EventHandlers.taskAdded }
-        ServiceBus.Subscribe { name = "EvtTaskTitleUpdated"; handler = EventHandlers.taskTitleUpdated }
-        ServiceBus.Subscribe { name = "EvtTaskStatusUpdated"; handler = EventHandlers.taskStatusUpdated }
-        ServiceBus.Subscribe { name = "EvtTaskDeleted"; handler = EventHandlers.taskDeleted }
+        ServiceBus.Subscribe CommandHandlers.addTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.updateTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.completeTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.deleteTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.deleteCompletedTasks |> ignore
+        ServiceBus.Subscribe EventHandlers.taskAdded |> ignore
+        ServiceBus.Subscribe EventHandlers.taskTitleUpdated |> ignore
+        ServiceBus.Subscribe EventHandlers.taskStatusUpdated |> ignore
+        ServiceBus.Subscribe EventHandlers.taskDeleted |> ignore

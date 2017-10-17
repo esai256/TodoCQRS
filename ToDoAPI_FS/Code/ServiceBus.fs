@@ -1,23 +1,33 @@
 namespace ToDoAPI
 
-open System.Collections.Generic
-open System.Linq
-
+///Service bus to (un)register message handlers and publish messages
 module ServiceBus =
-    let private subscriptions = new ResizeArray<Subscription>()
 
-    let subscriptionExists sub =
-        subscriptions 
-        |> Seq.exists (fun e -> e.name = sub.name)
+    ///Internal store of the registered subscriptions
+    let private subscriptions = new ResizeArray<(Message -> unit)>()
 
+    ///<summary>
+    ///Publishes the specified <c>message</c> to all registered subscribers
+    ///</summary>
+    ///<param name="message">Message to publish</param>
     let Publish message =
-        subscriptions
-        |> Seq.iter (fun sub -> message |> sub.handler)
+        let applyHandler handle =
+            handle message
 
-    let Subscribe (subscription : Subscription) =
-        if not (subscriptionExists subscription)
-        then subscriptions.Add(subscription) |> ignore
+        subscriptions |> Seq.iter applyHandler
 
-    let Unsubscribe (subscription : Subscription) =
-        if (subscriptionExists subscription)
-        then subscriptions.Remove(subscription) |> ignore
+    ///<summary>
+    ///Registers the specified message <c>handler</c> in the service bus
+    ///</summary>
+    ///<param name="handler">Message handler to apply when a message is published</param>
+    let Subscribe handler =
+        if not (subscriptions.Contains(handler))
+        then subscriptions.Add(handler) |> ignore
+
+    ///<summary>
+    ///Unregisters the specified message <c>handler</c> from the service bus
+    ///</summary>
+    ///<param name="handler">Message handler to not apply any more when a message is published</param>
+    let Unsubscribe handler =
+        if subscriptions.Contains(handler)
+        then subscriptions.Remove(handler) |> ignore

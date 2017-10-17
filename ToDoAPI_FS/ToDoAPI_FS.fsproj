@@ -8,10 +8,8 @@
   <ItemGroup>
     <Compile Include="Code/Types/TaskModel.fs" />
     <Compile Include="Code/Types/Message.fs" />
-    <Compile Include="Code/Types/Subscription.fs" />
     <Compile Include="Code/ServiceBus.fs" />
     <Compile Include="Code/ReadModel.fs" />
-    <Compile Include="Code/Types/Aggregate.fs" />
     <Compile Include="Code/DomainLogic.fs" />
     <Compile Include="Code/WriteModel.fs" />
     <Compile Include="Code/Handlers/*.fs" />
