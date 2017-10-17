@@ -1,11 +1,9 @@
-// Learn more about F# at http://fsharp.org
-
 open System
 open System.IO
 open Microsoft.Extensions.Configuration
 open Microsoft.AspNetCore.Hosting
 
-open ToDoAPI_FS
+open ToDoAPI
 
 [<EntryPoint>]
 let main argv =

@@ -1,4 +1,4 @@
-namespace ToDoAPI_FS
+namespace ToDoAPI
 
 open System
 open System.Collections.Generic
@@ -33,5 +33,16 @@ type Startup (env:IHostingEnvironment)=
             .AddDebug()
             |> ignore
 
-        app.UseMvc() |> ignore    
-    
+        app.UseMvc() |> ignore
+
+        // Register command handlers and event handlers at service bus
+        ServiceBus.Subscribe CommandHandlers.addTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.updateTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.completeTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.uncompleteTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.deleteTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.deleteCompletedTasks |> ignore
+        ServiceBus.Subscribe EventHandlers.taskAdded |> ignore
+        ServiceBus.Subscribe EventHandlers.taskTitleUpdated |> ignore
+        ServiceBus.Subscribe EventHandlers.taskStatusUpdated |> ignore
+        ServiceBus.Subscribe EventHandlers.taskDeleted |> ignore
