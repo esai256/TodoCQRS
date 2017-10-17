@@ -5,9 +5,9 @@ module ReadModel =
 
     ///Internal store of the read model
     let private items = ResizeArray<TaskModel>()
-    items.Add({ id = System.Guid.NewGuid(); title = "Task 1"; isDone = true })
-    items.Add({ id = System.Guid.NewGuid(); title = "Task 2"; isDone = true })
-    items.Add({ id = System.Guid.NewGuid(); title = "Task 3"; isDone = true })
+    items.Add({ id = 1; title = "Task 1"; isDone = true })
+    items.Add({ id = 2; title = "Task 2"; isDone = true })
+    items.Add({ id = 3; title = "Task 3"; isDone = true })
 
     ///<summary>
     ///Loads all items from the read model that apply to the specified <c>filter</c>
@@ -22,9 +22,6 @@ module ReadModel =
     ///<returns>All items from the read model</returns>
     let getAll =
         items
-
-    //let getCount =
-    //    items |> Seq.length
 
     ///<summary>
     ///Adds the specified <c>task</c> to the read model

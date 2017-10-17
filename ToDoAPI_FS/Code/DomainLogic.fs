@@ -9,7 +9,8 @@ module DomainLogic =
     ///<param name="task">New task to process</param>
     ///<returns>Enumeration of events that occured while creating a new task</returns>
     let createTask task =
-        seq [ TaskAddedEvent { id = System.Guid.NewGuid(); title = task.title; isDone = task.isDone } ]
+        let nextID = (ReadModel.getAll |> Seq.length) + 1
+        seq [ TaskAddedEvent { id = nextID; title = task.title; isDone = task.isDone } ]
 
     ///<summary>
     ///Processes the update of the <c>title</c> of the task with the specified <c>id</c>
