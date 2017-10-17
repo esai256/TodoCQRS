@@ -39,6 +39,7 @@ type Startup (env:IHostingEnvironment)=
         ServiceBus.Subscribe CommandHandlers.addTask |> ignore
         ServiceBus.Subscribe CommandHandlers.updateTask |> ignore
         ServiceBus.Subscribe CommandHandlers.completeTask |> ignore
+        ServiceBus.Subscribe CommandHandlers.uncompleteTask |> ignore
         ServiceBus.Subscribe CommandHandlers.deleteTask |> ignore
         ServiceBus.Subscribe CommandHandlers.deleteCompletedTasks |> ignore
         ServiceBus.Subscribe EventHandlers.taskAdded |> ignore

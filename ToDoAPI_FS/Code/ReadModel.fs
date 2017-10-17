@@ -10,6 +10,13 @@ module ReadModel =
     items.Add({ id = 3; title = "Task 3"; isDone = true })
 
     ///<summary>
+    ///Loads the complete read model
+    ///</summary>
+    ///<returns>All items from the read model</returns>
+    let getAll =
+        items
+
+    ///<summary>
     ///Loads all items from the read model that apply to the specified <c>filter</c>
     ///</summary>
     ///<param name="filter">Predicate to apply on the read model</param>
@@ -17,11 +24,11 @@ module ReadModel =
         items |> Seq.filter filter
 
     ///<summary>
-    ///Loads the complete read model
+    ///Loads all items from the read model that apply to the specified <c>filter</c>
     ///</summary>
-    ///<returns>All items from the read model</returns>
-    let getAll =
-        items
+    ///<param name="filter">Predicate to apply on the read model</param>
+    let getFirst filter =
+        items |> Seq.find filter
 
     ///<summary>
     ///Adds the specified <c>task</c> to the read model
@@ -40,24 +47,13 @@ module ReadModel =
         if index = -1 then None else Some(index)
 
     ///<summary>
-    ///Sets the specified <c>title</c> of the task with the specified <c>id</c>
+    ///Sets the specified <c>newTask</c> in the read model instead of the existing one
     ///</summary>
-    ///<param name="id">ID of the task to update</param>
-    ///<param name="title">New title to set</param>
-    let updateTaskTitle id title =
-        match (findIndexById id) with
-        | Some(i) -> items.Item(i) <- { id = id; title = title; isDone = false }
+    ///<param name="newTask">New task to set</param>
+    let updateTask newTask =
+        match (findIndexById newTask.id) with
+        | Some(i) -> items.Item(i) <- newTask
         | None    -> "Task not found" |> ignore
-
-    ///<summary>
-    ///Sets the specified <c>isDone</c> status of the task with the specified <c>id</c>
-    ///</summary>
-    ///<param name="id">ID of the task to update</param>
-    ///<param name="isDone">New status to set</param>
-    let updateTaskStatus id isDone =
-        match (findIndexById id) with
-        | Some(i) -> items.Item(i) <- { id = items.[i].id; title = items.[i].title; isDone = isDone }
-        | None    -> "Task not found" |> ignore     
 
     ///<summary>
     ///Deletes the task with the specified <c>id</c> from the read model

@@ -9,7 +9,7 @@ module EventHandlers =
     ///<param name="event">Incoming event</param>
     let taskAdded event =
         match event with
-        | TaskAddedEvent task -> ReadModel.insertTask task
+        | TaskAddedEvent task -> ReadModel.insertTask task |> ignore
         | _ -> "Not my message" |> ignore
 
     ///<summary>
@@ -18,7 +18,7 @@ module EventHandlers =
     ///<param name="event">Incoming event</param>
     let taskTitleUpdated event =
         match event with
-        | TaskUpdatedEvent (id, title) -> ReadModel.updateTaskTitle id title
+        | TaskUpdatedEvent task -> ReadModel.updateTask task |> ignore
         | _ -> "Not my message" |> ignore
 
     ///<summary>
@@ -27,7 +27,8 @@ module EventHandlers =
     ///<param name="event">Incoming event</param>
     let taskStatusUpdated event =
         match event with
-        | TaskCompletedEvent id -> ReadModel.updateTaskStatus id true
+        | TaskCompletedEvent task -> ReadModel.updateTask task |> ignore
+        | TaskUncompletedEvent task -> ReadModel.updateTask task |> ignore
         | _ -> "Not my message" |> ignore
 
     ///<summary>
@@ -36,5 +37,5 @@ module EventHandlers =
     ///<param name="event">Incoming event</param>
     let taskDeleted event =
         match event with
-        | TaskDeletedEvent id -> ReadModel.deleteTask id
+        | TaskDeletedEvent id -> ReadModel.deleteTask id |> ignore
         | _ -> "Not my message" |> ignore

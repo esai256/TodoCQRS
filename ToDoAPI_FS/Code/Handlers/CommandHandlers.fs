@@ -22,7 +22,7 @@ module CommandHandlers =
     ///<param name="command">Incoming command</param>
     let updateTask command =
         match command with
-        | UpdateTaskCommand (id, title) -> Some(DomainLogic.updateTask (id, title)) |> commandChain
+        | UpdateTaskCommand (id, title) -> Some(DomainLogic.updateTaskTitle (id, title)) |> commandChain
         | _ -> "Not my message" |> ignore
 
     ///<summary>
@@ -31,7 +31,16 @@ module CommandHandlers =
     ///<param name="command">Incoming command</param>
     let completeTask command =
         match command with
-        | CompleteTaskCommand id -> Some(DomainLogic.completeTask id) |> commandChain
+        | CompleteTaskCommand id -> Some(DomainLogic.updateTaskStatus (id, true)) |> commandChain
+        | _ -> "Not my message" |> ignore
+
+    ///<summary>
+    /// Handles the <see cref="ToDoAPI.UncompleteTaskCommand">UncompleteTaskCommand</see>
+    ///</summary>
+    ///<param name="command">Incoming command</param>
+    let uncompleteTask command =
+        match command with
+        | UncompleteTaskCommand id -> Some(DomainLogic.updateTaskStatus (id, false)) |> commandChain
         | _ -> "Not my message" |> ignore
 
     ///<summary>

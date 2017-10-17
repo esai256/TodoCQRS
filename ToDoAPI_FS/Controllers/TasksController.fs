@@ -17,13 +17,14 @@ type TasksController() =
     member this.Get(id : int) =
         ReadModel.get (fun task -> task.id = id)
 
-    // GET fapi/tasks/active
+    // GET fapi/tasks/done
+    // GET fapi/tasks/undone
     [<HttpGet("{status:alpha}")>]
     member this.Get(status : string) =
         let isDone = 
             match status with
-            | "active" -> Some(false)
-            | "completed" -> Some(true)
+            | "done"   -> Some(true)
+            | "undone" -> Some(false)
             | _ -> None
         
         ReadModel.get (fun task -> task.isDone = match isDone with | Some(x) -> x | None -> task.isDone)
@@ -34,26 +35,32 @@ type TasksController() =
         AddTaskCommand task
         |> ServiceBus.Publish
         |> ignore
-        this.Get()
-    
-    // PUT fapi/tasks
-    [<HttpPut>]
-    member this.Put([<FromBody>]task : TaskModel) =
-        let command = match task.isDone with
-                      | true -> CompleteTaskCommand task.id
-                      | false -> UpdateTaskCommand (task.id, task.title)
+
+    // PUT fapi/tasks/3
+    [<HttpPut("{id:int}")>]
+    member this.UpdateTitle(id : int, [<FromBody>]title : string) =
+        UpdateTaskCommand (id, title)
+        |> ServiceBus.Publish
+        |> ignore
+
+    // PUT fapi/tasks/3/done
+    [<HttpPut("{id:int}/{status:alpha}")>]
+    member this.UpdateStatus(id : int, status : string) =
+        let command = match status with
+                      | "done" -> CompleteTaskCommand id
+                      | "undone" -> UncompleteTaskCommand id
+                      | _ -> InvalidCommand (sprintf "Unknown status: \"%s\"" status)
+
         command
         |> ServiceBus.Publish
         |> ignore
-        this.Get()
-    
+        
     // DELETE fapi/tasks
     [<HttpDelete>]
     member this.Delete() =
         DeleteCompletedTasksCommand true
         |> ServiceBus.Publish
         |> ignore
-        this.Get()
     
     // DELETE fapi/tasks/5
     [<HttpDelete("{id}")>]
@@ -61,4 +68,3 @@ type TasksController() =
         DeleteTaskCommand id
         |> ServiceBus.Publish
         |> ignore
-        this.Get()

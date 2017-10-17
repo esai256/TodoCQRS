@@ -11,10 +11,10 @@ module ServiceBus =
     ///</summary>
     ///<param name="message">Message to publish</param>
     let Publish message =
-        let applyHandler handle =
+        let apply handle =
             handle message
 
-        subscriptions |> Seq.iter applyHandler
+        subscriptions |> Seq.iter apply
 
     ///<summary>
     ///Registers the specified message <c>handler</c> in the service bus
