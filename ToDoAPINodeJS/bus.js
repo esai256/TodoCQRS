@@ -24,10 +24,7 @@ class Bus
     publish(symbol, message)
     {
         //set new collection of subscribers to this message-type (symbol) if not yet existing
-        if (!this.Subscribers.get(symbol))
-        {
-            this.Subscribers.set(symbol, new Set());
-        }
+        ensureSubscriberCollection(this.Subscribers, symbol);
 
         this.Subscribers.get(symbol).forEach(subscriber =>
         {
@@ -44,12 +41,17 @@ class Bus
     subscribe(symbol, subscriber)
     {
         //set new collection of subscribers to this message-type (symbol) if not yet existing
-        if (!this.Subscribers.get(symbol))
-        {
-            this.Subscribers.set(symbol, new Set());
-        }
+        ensureSubscriberCollection(this.Subscribers, symbol);
 
         this.Subscribers.get(symbol).add(new subscriber());
+    }
+}
+
+//mutating -> ew?
+function ensureSubscriberCollection(map, symbol) {
+    if (!map.get(symbol))
+    {
+        map.set(symbol, new Set());
     }
 }
 
