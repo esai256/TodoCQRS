@@ -5,11 +5,8 @@ const Repository = require("./repository");
 module.exports = class AddTaskSubscriber extends Subscriber {
     handle(message) {
         super.handle(message);
-        console.log(message);
 
-        new AddTaskCommand(message).execute().then((aggregate) => {
-            this.Repository.save(aggregate);
-        });
+        new AddTaskCommand(message).execute().then(aggregate => this.Repository.save(aggregate));
     }
 
     get Repository() {

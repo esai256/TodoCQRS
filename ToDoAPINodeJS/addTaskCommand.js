@@ -12,8 +12,6 @@ module.exports = class AddTaskCommand
     {
         return new Promise(resolve =>
         {
-            console.log(`I'm doing whatever i like to with ${JSON.stringify(this.Task)}`);
-            
             resolve(new Aggregate([new TaskAddedEvent(this.Task)]));
         });
     }
