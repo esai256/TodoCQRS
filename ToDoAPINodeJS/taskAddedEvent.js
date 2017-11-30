@@ -4,10 +4,10 @@ const Identifier = Symbol("TaskAddedEvent");
 module.exports = class TaskAddedEvent extends Event {
     constructor(task) {
         super();
+        this.Payload = task;
     }
 
     get Symbol() {
-        console.log(6, TaskAddedEvent.Symbol);
         return TaskAddedEvent.Symbol;
     }
 
