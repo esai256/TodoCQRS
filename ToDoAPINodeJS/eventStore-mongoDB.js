@@ -29,23 +29,26 @@ module.exports = class EventStoreMongoDB extends EventStore
      */
     save(events)
     {
-        return new Promise((resolve, reject) =>
+        return new Promise((resolveSave, rejectSave) =>
         {
-            super.save(events).then(() =>
+            if (events && events.length)
             {
-                let counter = 0;
-
-                events.forEach(event =>
+                super.save(events).then(() =>
                 {
-                    super.saveAndPublish(event).then(() =>
-                    {
-                        connectToDB(this.DBUrl, (connectionError, db) =>
-                        {
-                            if (!connectionError)
-                            {
-                                let eventStore = db.collection("EventStore");
+                    let counter = 0;
 
-                                eventStore.insert(event, (insertionError) =>
+                    //TODO Flatten this
+                    connectToDB(this.DBUrl, (connectionError, db) => new Promise((resolveDBConnection, rejectDBConnection) =>
+                    {
+                        if (!connectionError)
+                        {
+                            let eventStore = db.collection("EventStore");
+
+                            resolveDBConnection();
+
+                            events.forEach(event =>
+                            {
+                                eventStore.insert(event, insertionError =>
                                 {
                                     if (!insertionError)
                                     {
@@ -55,27 +58,33 @@ module.exports = class EventStoreMongoDB extends EventStore
                                         }
                                         else
                                         {
-                                            resolve();
+                                            this.publish(event);
+                                            resolveSave();
                                         }
                                     }
                                     else
                                     {
-                                        reject(insertionError);
+                                        rejectSave(insertionError);
                                     }
                                 });
-                            }
-                            else
-                            {
-                                reject(connectionError);
-                            }
-                        });
-                    });
+                            });
+                        }
+                        else
+                        {
+                            rejectDBConnection(connectionError);
+                        }
+                    }));
                 });
-            });
+            }
+            else
+            {
+                rejectSave("no events are being saved");
+            }
         });
     }
 };
 
+//TODO Does this belong anywhere else?
 /**
  * sets up the connection to the MongoDB database at the given url and performs actions
  * @param  {string} url the Url to connect to the MongoDB Database
@@ -92,6 +101,6 @@ function connectToDB(url = default_url, callback)
             throw new Error("DataBase cannot be reached.");
         }
 
-        callback(err, db).then(() => db.close());
+        callback(err, db).then(() => db.close()).catch(error => console.error("an error occured", error));
     });
 }

@@ -1,4 +1,4 @@
-const EventStore = require("./eventStore");
+const EventStore = require("./eventStore"/*-mongoDB*/);
 
 /**
  * Handles Aggregates
