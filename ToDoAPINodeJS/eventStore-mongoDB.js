@@ -3,6 +3,7 @@ const MongoClient = require("mongodb").MongoClient;
 
 // Connection URL
 const default_url = "mongodb://localhost:27017/TodoMVC";
+const INDEX_OFFSET = 1;
 
 /**
  * @class
@@ -31,9 +32,9 @@ module.exports = class EventStoreMongoDB extends EventStore
     {
         return new Promise((resolveSave, rejectSave) =>
         {
-            if (events && events.length)
+            super.save(events).then(() =>
             {
-                super.save(events).then(() =>
+                if (events && events.length)
                 {
                     let counter = 0;
 
@@ -46,40 +47,41 @@ module.exports = class EventStoreMongoDB extends EventStore
 
                             resolveDBConnection();
 
-                            events.forEach(event =>
+                            events.forEach(event => eventStore.insert(event, insertionError =>
                             {
-                                eventStore.insert(event, insertionError =>
+                                if (!insertionError)
                                 {
-                                    if (!insertionError)
+                                    let isLastEvent = counter != events.length - INDEX_OFFSET;
+
+                                    if(isLastEvent)
                                     {
-                                        if (counter != events.length)
-                                        {
-                                            counter++;
-                                        }
-                                        else
-                                        {
-                                            this.publish(event);
-                                            resolveSave();
-                                        }
+                                        resolveSave();
                                     }
                                     else
                                     {
-                                        rejectSave(insertionError);
+                                        counter++;
                                     }
-                                });
-                            });
+                                }
+                                else
+                                {
+                                    console.error(new Date(), "An error occurred while saving to the MongoDB-Database.");
+                                    rejectSave(insertionError);
+                                }
+                            }));
                         }
                         else
                         {
+                            console.error(new Date(), "The connection could not be established");
                             rejectDBConnection(connectionError);
                         }
                     }));
-                });
-            }
-            else
-            {
-                rejectSave("no events are being saved");
-            }
+                }
+                else
+                {
+                    console.error(new Date(), "It was tried to save, while there is nothing to save.");
+                    rejectSave("no events are being saved");
+                }
+            });
         });
     }
 };
@@ -101,6 +103,7 @@ function connectToDB(url = default_url, callback)
             throw new Error("DataBase cannot be reached.");
         }
 
-        callback(err, db).then(() => db.close()).catch(error => console.error("an error occured", error));
+        //TODO make it readable
+        callback(err, db).then(() => db.close(), error => console.error(new Date(), "an error occured", error));
     });
 }
