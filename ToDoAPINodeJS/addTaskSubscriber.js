@@ -1,6 +1,7 @@
 const Subscriber = require("./subscriber.js");
 const AddTaskCommand = require("./addTaskCommand.js");
-const Repository = require("./repository");
+const Config = require("./config.js");
+const Repository = Config.Repository;
 
 module.exports = class AddTaskSubscriber extends Subscriber {
     handle(message) {
