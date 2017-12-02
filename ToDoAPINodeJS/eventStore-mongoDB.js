@@ -1,5 +1,6 @@
 const EventStore = require("./eventStore");
 const MongoClient = require("mongodb").MongoClient;
+const Logger = require("./logger.js").DefaultLogger;
 
 // Connection URL
 const default_url = "mongodb://localhost:27017/TodoMVC";
@@ -51,7 +52,7 @@ module.exports = class EventStoreMongoDB extends EventStore
                             {
                                 if (!insertionError)
                                 {
-                                    let isLastEvent = counter != events.length - INDEX_OFFSET;
+                                    let isLastEvent = counter == events.length - INDEX_OFFSET;
 
                                     if(isLastEvent)
                                     {
@@ -64,21 +65,21 @@ module.exports = class EventStoreMongoDB extends EventStore
                                 }
                                 else
                                 {
-                                    console.error(new Date(), "An error occurred while saving to the MongoDB-Database.");
+                                    Logger.error("An error occurred while saving to the MongoDB-Database.");
                                     rejectSave(insertionError);
                                 }
                             }));
                         }
                         else
                         {
-                            console.error(new Date(), "The connection could not be established");
+                            Logger.error("The connection could not be established");
                             rejectDBConnection(connectionError);
                         }
                     }));
                 }
                 else
                 {
-                    console.error(new Date(), "It was tried to save, while there is nothing to save.");
+                    Logger.error("It was tried to save, while there is nothing to save.");
                     rejectSave("no events are being saved");
                 }
             });
@@ -104,6 +105,6 @@ function connectToDB(url = default_url, callback)
         }
 
         //TODO make it readable
-        callback(err, db).then(() => db.close(), error => console.error(new Date(), "an error occured", error));
+        callback(err, db).then(() => db.close(), error => Logger.error(`an error occured: ${error}`));
     });
 }
