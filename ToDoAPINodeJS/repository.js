@@ -1,5 +1,3 @@
-const EventStore = require("./eventStore"/*-mongoDB*/);
-
 /**
  * Handles Aggregates
  * @class
@@ -8,11 +6,11 @@ const EventStore = require("./eventStore"/*-mongoDB*/);
 module.exports = class Repository {
     /**
      * @constructor
-     * @param  {EventStore} eventStore the eventStore into which the given events from aggregates should be saved into
+     * @param {EventStore} eventStoreClass the class of the event-store in which should be written
      * @return {void}
      */
-    constructor() {
-        this.EventStore = new EventStore();
+    constructor(eventStoreClass = require("./eventStore.js")) {
+        this.EventStore = new eventStoreClass();
     }
 
     /**
