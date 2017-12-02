@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-module.exports = class Logger
+class Logger
 {
     constructor(logFileName = `${__dirname}/todoCQRS.log`)
     {
@@ -39,7 +39,10 @@ module.exports = class Logger
 
         fs.appendFile(this.logFileName, logMessage, error => error ? console.error(`Could not write to the logs! ${error}`) : undefined);
     }
-};
+}
+
+module.exports = Logger;
+module.exports.DefaultLogger = new Logger();
 
 function getCurrentTimeStamp(date = new Date(Date.now()))
 {
