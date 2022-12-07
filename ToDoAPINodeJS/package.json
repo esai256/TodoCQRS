@@ -8,7 +8,7 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "mongodb": "^3.1.13"
   }
 }
